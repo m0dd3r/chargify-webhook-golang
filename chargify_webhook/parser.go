@@ -7,10 +7,12 @@ import (
 	"strings"
 )
 
+type PayloadMap map[string]interface{}
+
 type ChargifyWebhook struct {
 	Id      int
 	Event   string
-	Payload map[string]interface{}
+	Payload PayloadMap
 }
 
 const (
