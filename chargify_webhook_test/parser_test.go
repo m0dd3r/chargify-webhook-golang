@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"gitlab.com/batchblue-team/chargify-webhook-golang/chargify_webhook"
+	"github.com/m0dd3r/chargify-webhook-golang/chargify_webhook"
 )
 
 func TestUnmarshalText(t *testing.T) {
