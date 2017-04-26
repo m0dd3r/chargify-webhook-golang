@@ -62,7 +62,7 @@ func parse(pairs url.Values) (ChargifyWebhook, error) {
 			}
 			val := pairs.Get(k)
 			debugf("LEVELS: %v, value: %v\n", levels, val)
-			buildGenericMap(genericMap, val, levels)
+			buildNestedMap(genericMap, val, levels)
 		}
 	}
 	w.Id, err = strconv.Atoi(pairs.Get(ID))
@@ -75,15 +75,15 @@ func parse(pairs url.Values) (ChargifyWebhook, error) {
 
 }
 
-func buildGenericMap(result map[string]interface{}, val interface{}, keys []string) {
-	key := keys[0]
+func buildNestedMap(result map[string]interface{}, val interface{}, keys []string) {
 	if len(keys) < 1 {
 		return
-	} else if len(keys) == 1 {
+	}
+	key := keys[0]
+	if len(keys) == 1 {
 		result[key] = val
 	} else {
-		key := keys[0]
 		result[key] = make(map[string]interface{})
-		buildGenericMap(result[key].(map[string]interface{}), val, keys[1:])
+		buildNestedMap(result[key].(map[string]interface{}), val, keys[1:])
 	}
 }

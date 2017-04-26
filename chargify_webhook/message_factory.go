@@ -38,7 +38,7 @@ func CreateMessage(t MessageType, p PayloadMap) (Message, error) {
 	factory, ok := messageFactories[t]
 	if !ok {
 		// Factory has not been registered.
-		// Make a list of all available datastore factories for logging.
+		// Make a list of all available factories for logging.
 		availableMessageTypes := make([]string, len(messageFactories))
 		for k, _ := range messageFactories {
 			availableMessageTypes = append(availableMessageTypes, string(k))

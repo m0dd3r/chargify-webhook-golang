@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"testing"
+	"time"
 
 	"gitlab.com/batchblue-team/chargify-webhook-golang/chargify_webhook"
 )
@@ -14,6 +15,8 @@ type testInput struct {
 	MessageType chargify_webhook.MessageType
 	Verifier    verifier
 }
+
+var now = time.Now()
 
 var inputs []testInput = []testInput{
 	testInput{
@@ -27,18 +30,44 @@ var inputs []testInput = []testInput{
 			return nil
 		}},
 	testInput{
-		map[string]interface{}{"site": map[string]interface{}{"id": 5, "subdomain": "chargify"}},
+		map[string]interface{}{
+			"site": map[string]interface{}{
+				"id":        5,
+				"subdomain": "chargify",
+			},
+			"subscription": map[string]interface{}{
+				"id":               55,
+				"state":            "active",
+				"trial_started_at": now,
+				"customer": map[string]interface{}{
+					"first_name": "bob",
+					"last_name":  "dobbler",
+				},
+			},
+		},
 		chargify_webhook.SUBSCRIPTION_STATE_CHANGE,
 		func(i interface{}) error {
 			ssc := i.(chargify_webhook.SubscriptionStateChange)
 			if ssc.Site.Id != 5 || ssc.Site.Subdomain != "chargify" {
-				return errors.New(fmt.Sprintf("Failed to properly populate SSC: %v", ssc))
+				return errors.New(fmt.Sprintf("Failed to properly populate SSC.Site: %v", ssc))
+			}
+
+			if ssc.Subscription.Id != 55 ||
+				ssc.Subscription.State != "active" ||
+				ssc.Subscription.TrialStartedAt != now {
+				return errors.New(fmt.Sprintf("Failed to properly populate SSC.Subscription: %v", ssc.Subscription))
+			}
+
+			if ssc.Subscription.Customer.FirstName != "bob" ||
+				ssc.Subscription.Customer.LastName != "dobbler" {
+				return errors.New(fmt.Sprintf("Failed to properly populate SSC.Subscription.Customer: %v", ssc.Subscription.Customer))
 			}
 			return nil
-		}},
+		},
+	},
 }
 
-func TestCreateTMessage(t *testing.T) {
+func TestCreateMessage(t *testing.T) {
 	for _, input := range inputs {
 		input := input
 		msg, err := chargify_webhook.CreateMessage(input.MessageType, input.Payload)
@@ -52,19 +81,3 @@ func TestCreateTMessage(t *testing.T) {
 		}
 	}
 }
-
-//func TestCreateTMessage(t *testing.T) {
-//	payload := map[string]interface{}{"chargify": "testing"}
-//	testI, err := chargify_webhook.CreateMessage(chargify_webhook.TEST, payload)
-//	if err != nil {
-//		t.Error("Failed to create TEST: ", err)
-//	}
-//	test, ok := testI.(chargify_webhook.Test)
-//	if !ok {
-//		t.Error("Failed to assert TEST: ", test)
-//	}
-//
-//	if test.Chargify != "testing" {
-//		t.Error("Failed to properly populate TEST: ", test.Chargify)
-//	}
-//}
