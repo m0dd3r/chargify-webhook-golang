@@ -44,11 +44,9 @@ func newMessage(t interface{}, p PayloadMap) error {
 	if err != nil {
 		return err
 	}
-	debugf("Marshalled json: %s\n", string(b))
 	err = json.Unmarshal(b, t)
 	if err != nil {
 		return err
 	}
-	debugf("Unmarshalled struct: %s\n", t)
 	return nil
 }

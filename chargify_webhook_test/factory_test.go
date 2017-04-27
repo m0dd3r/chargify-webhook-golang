@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"testing"
-	"time"
 
 	"github.com/m0dd3r/chargify-webhook-golang/chargify_webhook"
 )
@@ -16,7 +15,9 @@ type testInput struct {
 	Verifier    verifier
 }
 
-var now = time.Now()
+const timeFormat = "2006-01-02 15:04:05 -0700"
+
+var now = "2012-09-09 11:38:33 -0400"
 
 var inputs []testInput = []testInput{
 	testInput{
@@ -32,11 +33,11 @@ var inputs []testInput = []testInput{
 	testInput{
 		map[string]interface{}{
 			"site": map[string]interface{}{
-				"id":        5,
+				"id":        "5",
 				"subdomain": "chargify",
 			},
 			"subscription": map[string]interface{}{
-				"id":               55,
+				"id":               "55",
 				"state":            "active",
 				"trial_started_at": now,
 				"customer": map[string]interface{}{
@@ -53,9 +54,11 @@ var inputs []testInput = []testInput{
 			}
 
 			if ssc.Subscription.Id != 55 ||
-				ssc.Subscription.State != "active" ||
-				ssc.Subscription.TrialStartedAt != now {
+				ssc.Subscription.State != "active" {
 				return errors.New(fmt.Sprintf("Failed to properly populate SSC.Subscription: %v", ssc.Subscription))
+			}
+			if ssc.Subscription.TrialStartedAt.Format(timeFormat) != now {
+				return errors.New(fmt.Sprintf("Failed to properly parse times: %v, %v", ssc.Subscription.TrialStartedAt.Format(timeFormat), now))
 			}
 
 			if ssc.Subscription.Customer.FirstName != "bob" ||
