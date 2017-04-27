@@ -10,9 +10,9 @@ import (
 
 type verifier func(interface{}) error
 type testInput struct {
-	Payload     map[string]interface{}
-	MessageType cw.MessageType
-	Verifier    verifier
+	Payload   map[string]interface{}
+	EventName cw.EventName
+	Verifier  verifier
 }
 
 const (
@@ -74,11 +74,11 @@ var inputs []testInput = []testInput{
 func TestCreateMessage(t *testing.T) {
 	for _, input := range inputs {
 		input := input
-		msg, err := cw.CreateMessage(input.MessageType, input.Payload)
+		msg, err := cw.CreateMessage(input.EventName, input.Payload)
 		if err != nil {
-			t.Errorf("Failed to create %s: %s", input.MessageType, err)
+			t.Errorf("Failed to create %s: %s", input.EventName, err)
 		}
-		t.Logf("Verifying %s, %v", input.MessageType, msg)
+		t.Logf("Verifying %s, %v", input.EventName, msg)
 		err = input.Verifier(msg)
 		if err != nil {
 			t.Error(err)

@@ -7,11 +7,12 @@ import (
 	"strings"
 )
 
+type EventName string
 type PayloadMap map[string]interface{}
 
 type ChargifyWebhook struct {
 	Id      int
-	Event   string
+	Event   EventName
 	Payload PayloadMap
 }
 
@@ -77,7 +78,7 @@ func (parser Parser) parseKeyValuePairs(pairs url.Values, w *ChargifyWebhook) er
 	if err != nil {
 		return err
 	}
-	w.Event = pairs.Get(EVENT)
+	w.Event = EventName(pairs.Get(EVENT))
 	w.Payload = payloadMap
 	return nil
 }

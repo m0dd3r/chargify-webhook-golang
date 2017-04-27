@@ -3,8 +3,8 @@ package chargify_webhook
 import "encoding/json"
 
 const (
-	TEST                      MessageType = "test"
-	SUBSCRIPTION_STATE_CHANGE MessageType = "subscription_state_change"
+	TEST                      EventName = "test"
+	SUBSCRIPTION_STATE_CHANGE EventName = "subscription_state_change"
 )
 
 type Test struct {

@@ -8,20 +8,19 @@ import (
 )
 
 type Message interface{}
-type MessageType string
 type MessageFactory func(PayloadMap) (Message, error)
 
 var (
-	messageFactories map[MessageType]MessageFactory
+	messageFactories map[EventName]MessageFactory
 )
 
 func init() {
-	messageFactories = make(map[MessageType]MessageFactory)
+	messageFactories = make(map[EventName]MessageFactory)
 	RegisterMessageFactory(TEST, NewTest)
 	RegisterMessageFactory(SUBSCRIPTION_STATE_CHANGE, NewSubscriptionStateChange)
 }
 
-func RegisterMessageFactory(t MessageType, factory MessageFactory) {
+func RegisterMessageFactory(t EventName, factory MessageFactory) {
 	if factory == nil {
 		log.Panicf("Message factory %s does not exist.", t)
 	}
@@ -32,16 +31,16 @@ func RegisterMessageFactory(t MessageType, factory MessageFactory) {
 	messageFactories[t] = factory
 }
 
-func CreateMessage(t MessageType, p PayloadMap) (Message, error) {
+func CreateMessage(t EventName, p PayloadMap) (Message, error) {
 	factory, ok := messageFactories[t]
 	if !ok {
 		// Factory has not been registered.
 		// Make a list of all available factories for logging.
-		availableMessageTypes := make([]string, len(messageFactories))
+		availableEventNames := make([]string, len(messageFactories))
 		for k, _ := range messageFactories {
-			availableMessageTypes = append(availableMessageTypes, string(k))
+			availableEventNames = append(availableEventNames, string(k))
 		}
-		return nil, errors.New(fmt.Sprintf("Invalid Message type. Must be one of: %s", strings.Join(availableMessageTypes, ", ")))
+		return nil, errors.New(fmt.Sprintf("Invalid Message type. Must be one of: %s", strings.Join(availableEventNames, ", ")))
 	}
 	return factory(p)
 }
