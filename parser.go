@@ -15,6 +15,10 @@ type ChargifyWebhook struct {
 	Payload PayloadMap
 }
 
+type Parser struct {
+	matcher *regexp.Regexp
+}
+
 const (
 	ID      = "id"
 	EVENT   = "event"
@@ -22,58 +26,60 @@ const (
 	PATTERN = "\\[([^\\]]+)]"
 )
 
-var (
-	matcher *regexp.Regexp
-	err     error
-)
-
-func init() {
-	matcher = regexp.MustCompile(PATTERN)
+func NewParser() Parser {
+	return Parser{
+		matcher: regexp.MustCompile(PATTERN),
+	}
 }
 
 func ParseChargifyWebhook(body string) (ChargifyWebhook, error) {
+	w := ChargifyWebhook{}
+	err := NewParser().ParseChargifyWebhook(body, &w)
+	if err != nil {
+		return w, err
+	}
+	return w, nil
+}
+
+func (parser Parser) ParseChargifyWebhook(body string, w *ChargifyWebhook) error {
 	var (
 		err error
-		w   ChargifyWebhook
 	)
 	pairs, err := url.ParseQuery(body)
 	if err != nil {
-		return w, err
+		return err
 	}
 
-	return parse(pairs)
+	return parser.parseKeyValuePairs(pairs, w)
 }
 
-func parse(pairs url.Values) (ChargifyWebhook, error) {
-	var (
-		genericMap map[string]interface{}
-		w          ChargifyWebhook
-	)
-	genericMap = make(map[string]interface{})
-	w = ChargifyWebhook{}
+func (parser Parser) parseKeyValuePairs(pairs url.Values, w *ChargifyWebhook) error {
+	var err error
+
+	payloadMap := make(map[string]interface{})
 
 	for k, _ := range pairs {
 		if strings.HasPrefix(k, PAYLOAD) {
-			var levels []string
-			matches := matcher.FindAllStringSubmatch(k, -1)
-			levels = make([]string, len(matches))
+			matches := parser.matcher.FindAllStringSubmatch(k, -1)
+			levels := make([]string, len(matches))
 			for i, l := range matches {
 				levels[i] = l[1]
 			}
+
 			val := pairs.Get(k)
 			if val != "" {
-				buildNestedMap(genericMap, val, levels)
+				buildNestedMap(payloadMap, val, levels)
 			}
 		}
 	}
+
 	w.Id, err = strconv.Atoi(pairs.Get(ID))
 	if err != nil {
-		return w, err
+		return err
 	}
 	w.Event = pairs.Get(EVENT)
-	w.Payload = genericMap
-	return w, nil
-
+	w.Payload = payloadMap
+	return nil
 }
 
 func buildNestedMap(result map[string]interface{}, val string, keys []string) {

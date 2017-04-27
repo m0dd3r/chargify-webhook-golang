@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"log"
-	"regexp"
 	"strings"
 )
 
@@ -17,7 +16,6 @@ var (
 )
 
 func init() {
-	matcher = regexp.MustCompile(PATTERN)
 	messageFactories = make(map[MessageType]MessageFactory)
 	RegisterMessageFactory(TEST, NewTest)
 	RegisterMessageFactory(SUBSCRIPTION_STATE_CHANGE, NewSubscriptionStateChange)

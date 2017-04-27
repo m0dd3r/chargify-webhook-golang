@@ -1,30 +1,31 @@
-package chargify_webhook_test
+package test
 
 import (
 	"errors"
 	"fmt"
 	"testing"
 
-	"github.com/m0dd3r/chargify-webhook-golang/chargify_webhook"
+	cw "github.com/m0dd3r/chargify-webhook-golang"
 )
 
 type verifier func(interface{}) error
 type testInput struct {
 	Payload     map[string]interface{}
-	MessageType chargify_webhook.MessageType
+	MessageType cw.MessageType
 	Verifier    verifier
 }
 
-const timeFormat = "2006-01-02 15:04:05 -0700"
-
-var now = "2012-09-09 11:38:33 -0400"
+const (
+	timeFormat = "2006-01-02 15:04:05 -0700"
+	now        = "2012-09-09 11:38:33 -0400"
+)
 
 var inputs []testInput = []testInput{
 	testInput{
 		map[string]interface{}{"chargify": "testing"},
-		chargify_webhook.TEST,
+		cw.TEST,
 		func(i interface{}) error {
-			test := i.(chargify_webhook.Test)
+			test := i.(cw.Test)
 			if test.Chargify != "testing" {
 				return errors.New(fmt.Sprintf("Failed to properly populate TEST: %v", test))
 			}
@@ -46,9 +47,9 @@ var inputs []testInput = []testInput{
 				},
 			},
 		},
-		chargify_webhook.SUBSCRIPTION_STATE_CHANGE,
+		cw.SUBSCRIPTION_STATE_CHANGE,
 		func(i interface{}) error {
-			ssc := i.(chargify_webhook.SubscriptionStateChange)
+			ssc := i.(cw.SubscriptionStateChange)
 			if ssc.Site.Id != 5 || ssc.Site.Subdomain != "chargify" {
 				return errors.New(fmt.Sprintf("Failed to properly populate SSC.Site: %v", ssc))
 			}
@@ -73,7 +74,7 @@ var inputs []testInput = []testInput{
 func TestCreateMessage(t *testing.T) {
 	for _, input := range inputs {
 		input := input
-		msg, err := chargify_webhook.CreateMessage(input.MessageType, input.Payload)
+		msg, err := cw.CreateMessage(input.MessageType, input.Payload)
 		if err != nil {
 			t.Errorf("Failed to create %s: %s", input.MessageType, err)
 		}
