@@ -3,16 +3,13 @@ package chargify_webhook
 import "time"
 
 type FormattedTime struct {
-	time.Time
+	*time.Time
 }
 
 const timeFormat = `"2006-01-02 15:04:05 -0700"`
 
 func (f *FormattedTime) MarshalJSON() ([]byte, error) {
-	if f.Time.IsZero() {
-		return []byte{}, nil
-	}
-	return []byte(f.Time.Format(timeFormat)), nil
+	return []byte(f.Format(timeFormat)), nil
 }
 
 func (f *FormattedTime) UnmarshalJSON(input []byte) error {
@@ -20,100 +17,100 @@ func (f *FormattedTime) UnmarshalJSON(input []byte) error {
 	if err != nil {
 		return err
 	}
-	f.Time = t
+	*f = FormattedTime{&t}
 	return nil
 }
 
 type Subscription struct {
-	Id                      int           `json:"id,string"`
-	State                   string        `json:"state"`
-	TrialStartedAt          FormattedTime `json:"trial_started_at,string"`
-	Customer                Customer      `json:"customer"`
-	Product                 Product       `json:"product"`
-	CreditCard              CreditCard    `json:"credit_card"`
-	TrialEndedAt            FormattedTime `json:"trial_ended_at,string"`
-	ActivatedAt             FormattedTime `json:"activated_at,string"`
-	CreatedAt               FormattedTime `json:"created_at,string"`
-	UpdatedAt               FormattedTime `json:"updated_at,string"`
-	ExpiresAt               FormattedTime `json:"expires_at,string"`
-	PreviousExpiresAt       FormattedTime `json:"previous_expires_at,string"`
-	BalanceInCents          int           `json:"balance_in_cents,string"`
-	CurrentPeriodEndsAt     FormattedTime `json:"current_period_ends_at,string"`
-	NextAssessmentAt        FormattedTime `json:"next_assessment_at,string"`
-	CanceledAt              FormattedTime `json:"canceled_at,string"`
-	CancellationMessage     string        `json:"cancellation_message"`
-	NextProductId           int           `json:"next_product_id,string"`
-	CancelAtEndOfPeriod     bool          `json:"cancel_at_end_of_period,string"`
-	PaymentCollectionMethod string        `json:"payment_collection_method"`
-	SnapDay                 string        `json:"snap_day"`
-	CancellationMethod      string        `json:"cancellation_method"`
-	CurrentPeriodStartAt    FormattedTime `json:"current_period_started_at,string"`
-	PreviousState           string        `json:"previous_state"`
-	SignupPaymentId         int           `json:"signup_payment_id,string"`
-	SignupRevenue           float32       `json:"signup_revenue,string"`
-	DelayedCancelAt         FormattedTime `json:"delayed_cancel_at,string"`
-	CouponCode              string        `json:"coupon_code"`
-	TotalRevenueInCents     int           `json:"total_revenue_in_cents,string"`
-	ProductPriceInCents     int           `json:"product_price_in_cents,string"`
-	ProductVersionNumber    int           `json:"product_version_number,string"`
-	PaymentType             string        `json:"payment_type"`
-	ReferralCode            string        `json:"referral_code"`
-	CouponUseCount          int           `json:"coupon_use_count,string"`
-	CouponUsesAllowed       int           `json:"coupon_uses_allowed,string"`
+	Id                      int            `json:"id,string"`
+	State                   string         `json:"state"`
+	TrialStartedAt          *FormattedTime `json:"trial_started_at,string"`
+	Customer                *Customer      `json:"customer"`
+	Product                 *Product       `json:"product"`
+	CreditCard              *CreditCard    `json:"credit_card"`
+	TrialEndedAt            *FormattedTime `json:"trial_ended_at,string"`
+	ActivatedAt             *FormattedTime `json:"activated_at,string"`
+	CreatedAt               *FormattedTime `json:"created_at,string"`
+	UpdatedAt               *FormattedTime `json:"updated_at,string"`
+	ExpiresAt               *FormattedTime `json:"expires_at,string"`
+	PreviousExpiresAt       *FormattedTime `json:"previous_expires_at,string"`
+	BalanceInCents          int            `json:"balance_in_cents,string"`
+	CurrentPeriodEndsAt     *FormattedTime `json:"current_period_ends_at,string"`
+	NextAssessmentAt        *FormattedTime `json:"next_assessment_at,string"`
+	CanceledAt              *FormattedTime `json:"canceled_at,string"`
+	CancellationMessage     string         `json:"cancellation_message"`
+	NextProductId           int            `json:"next_product_id,string"`
+	CancelAtEndOfPeriod     bool           `json:"cancel_at_end_of_period,string"`
+	PaymentCollectionMethod string         `json:"payment_collection_method"`
+	SnapDay                 string         `json:"snap_day"`
+	CancellationMethod      string         `json:"cancellation_method"`
+	CurrentPeriodStartAt    *FormattedTime `json:"current_period_started_at,string"`
+	PreviousState           string         `json:"previous_state"`
+	SignupPaymentId         int            `json:"signup_payment_id,string"`
+	SignupRevenue           float32        `json:"signup_revenue,string"`
+	DelayedCancelAt         *FormattedTime `json:"delayed_cancel_at,string"`
+	CouponCode              string         `json:"coupon_code"`
+	TotalRevenueInCents     int            `json:"total_revenue_in_cents,string"`
+	ProductPriceInCents     int            `json:"product_price_in_cents,string"`
+	ProductVersionNumber    int            `json:"product_version_number,string"`
+	PaymentType             string         `json:"payment_type"`
+	ReferralCode            string         `json:"referral_code"`
+	CouponUseCount          int            `json:"coupon_use_count,string"`
+	CouponUsesAllowed       int            `json:"coupon_uses_allowed,string"`
 }
 
 type Customer struct {
-	Id                         int           `json:"id,string"`
-	FirstName                  string        `json:"first_name"`
-	LastName                   string        `json:"last_name"`
-	Organization               string        `json:"organization"`
-	Email                      string        `json:"email"`
-	CreatedAt                  FormattedTime `json:"created_at,string"`
-	UpdatedAt                  FormattedTime `json:"updated_at,string"`
-	Reference                  string        `json:"reference"`
-	Address                    string        `json:"address"`
-	Address2                   string        `json:"address_2"`
-	City                       string        `json:"city"`
-	State                      string        `json:"state"`
-	Zip                        string        `json:"zip"`
-	Country                    string        `json:"country"`
-	Phone                      string        `json:"phone"`
-	PortalInviteLastSentAt     FormattedTime `json:"portal_invite_last_sent_at,string"`
-	PortalInviteLastAcceptedAt FormattedTime `json:"portal_invite_last_accepted_at,string"`
-	Verified                   bool          `json:"verified,string"`
-	PortalCustomerCreatedAt    FormattedTime `json:"portal_customer_created_at,string"`
-	CcEmails                   string        `json:"cc_emails"`
-	TaxExempt                  bool          `json:"tax_exempt,string"`
+	Id                         int            `json:"id,string"`
+	FirstName                  string         `json:"first_name"`
+	LastName                   string         `json:"last_name"`
+	Organization               string         `json:"organization"`
+	Email                      string         `json:"email"`
+	CreatedAt                  *FormattedTime `json:"created_at,string"`
+	UpdatedAt                  *FormattedTime `json:"updated_at,string"`
+	Reference                  string         `json:"reference"`
+	Address                    string         `json:"address"`
+	Address2                   string         `json:"address_2"`
+	City                       string         `json:"city"`
+	State                      string         `json:"state"`
+	Zip                        string         `json:"zip"`
+	Country                    string         `json:"country"`
+	Phone                      string         `json:"phone"`
+	PortalInviteLastSentAt     *FormattedTime `json:"portal_invite_last_sent_at,string"`
+	PortalInviteLastAcceptedAt *FormattedTime `json:"portal_invite_last_accepted_at,string"`
+	Verified                   bool           `json:"verified,string"`
+	PortalCustomerCreatedAt    *FormattedTime `json:"portal_customer_created_at,string"`
+	CcEmails                   string         `json:"cc_emails"`
+	TaxExempt                  bool           `json:"tax_exempt,string"`
 }
 
 type Product struct {
-	Id                      int                `json:"id,string"`
-	Name                    string             `json:"name"`
-	Handle                  string             `json:"handle"`
-	Description             string             `json:"description"`
-	AccountingCode          string             `json:"accounting_code"`
-	RequestCreditCard       bool               `json:"request_credit_card,string"`
-	ExpirationInterval      int                `json:"expiration_interval,string"`
-	ExpirationIntervalUnit  string             `json:"expiration_interval_unit"`
-	CreatedAt               FormattedTime      `json:"created_at,string"`
-	UpdatedAt               FormattedTime      `json:"updated_at,string"`
-	PriceInCents            int                `json:"price_in_cents,string"`
-	Interval                int                `json:"interval,string"`
-	IntervalUnit            string             `json:"interval_unit"`
-	InitialChargeInCents    int                `json:"initial_charge_in_cents,string"`
-	TrialPriceInCents       int                `json:"trial_price_in_cents,string"`
-	TrialInterval           int                `json:"trial_interval,string"`
-	TrialIntervalUnit       string             `json:"trial_interval_unit"`
-	ArchivedAt              FormattedTime      `json:"archived_at,string"`
-	RequireCreditCard       bool               `json:"require_credit_card,string"`
-	ReturnParams            string             `json:"return_params"`
-	Taxable                 bool               `json:"taxable,string"`
-	UpdateReturnUrl         string             `json:"update_return_url"`
-	InitialChargeAfterTrial bool               `json:"initial_charge_after_trial,string"`
-	VersionNumber           int                `json:"version_number,string"`
-	UpdateReturnParams      string             `json:"update_return_params"`
-	ProductFamily           ProductFamily      `json:"product_family"`
-	PublicSignupPages       []PublicSignupPage `json:"public_signup_pages"`
+	Id                      int                 `json:"id,string"`
+	Name                    string              `json:"name"`
+	Handle                  string              `json:"handle"`
+	Description             string              `json:"description"`
+	AccountingCode          string              `json:"accounting_code"`
+	RequestCreditCard       bool                `json:"request_credit_card,string"`
+	ExpirationInterval      int                 `json:"expiration_interval,string"`
+	ExpirationIntervalUnit  string              `json:"expiration_interval_unit"`
+	CreatedAt               *FormattedTime      `json:"created_at,string"`
+	UpdatedAt               *FormattedTime      `json:"updated_at,string"`
+	PriceInCents            int                 `json:"price_in_cents,string"`
+	Interval                int                 `json:"interval,string"`
+	IntervalUnit            string              `json:"interval_unit"`
+	InitialChargeInCents    int                 `json:"initial_charge_in_cents,string"`
+	TrialPriceInCents       int                 `json:"trial_price_in_cents,string"`
+	TrialInterval           int                 `json:"trial_interval,string"`
+	TrialIntervalUnit       string              `json:"trial_interval_unit"`
+	ArchivedAt              *FormattedTime      `json:"archived_at,string"`
+	RequireCreditCard       bool                `json:"require_credit_card,string"`
+	ReturnParams            string              `json:"return_params"`
+	Taxable                 bool                `json:"taxable,string"`
+	UpdateReturnUrl         string              `json:"update_return_url"`
+	InitialChargeAfterTrial bool                `json:"initial_charge_after_trial,string"`
+	VersionNumber           int                 `json:"version_number,string"`
+	UpdateReturnParams      string              `json:"update_return_params"`
+	ProductFamily           *ProductFamily      `json:"product_family"`
+	PublicSignupPages       []*PublicSignupPage `json:"public_signup_pages"`
 }
 
 type ProductFamily struct {
