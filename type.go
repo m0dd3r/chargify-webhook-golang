@@ -24,31 +24,31 @@ func (f *FormattedTime) UnmarshalJSON(input []byte) error {
 type Subscription struct {
 	Id                      int            `json:"id,string"`
 	State                   string         `json:"state"`
-	TrialStartedAt          *FormattedTime `json:"trial_started_at,string"`
+	TrialStartedAt          *FormattedTime `json:"trial_started_at"`
 	Customer                *Customer      `json:"customer"`
 	Product                 *Product       `json:"product"`
 	CreditCard              *CreditCard    `json:"credit_card"`
-	TrialEndedAt            *FormattedTime `json:"trial_ended_at,string"`
-	ActivatedAt             *FormattedTime `json:"activated_at,string"`
-	CreatedAt               *FormattedTime `json:"created_at,string"`
-	UpdatedAt               *FormattedTime `json:"updated_at,string"`
-	ExpiresAt               *FormattedTime `json:"expires_at,string"`
-	PreviousExpiresAt       *FormattedTime `json:"previous_expires_at,string"`
+	TrialEndedAt            *FormattedTime `json:"trial_ended_at"`
+	ActivatedAt             *FormattedTime `json:"activated_at"`
+	CreatedAt               *FormattedTime `json:"created_at"`
+	UpdatedAt               *FormattedTime `json:"updated_at"`
+	ExpiresAt               *FormattedTime `json:"expires_at"`
+	PreviousExpiresAt       *FormattedTime `json:"previous_expires_at"`
 	BalanceInCents          int            `json:"balance_in_cents,string"`
-	CurrentPeriodEndsAt     *FormattedTime `json:"current_period_ends_at,string"`
-	NextAssessmentAt        *FormattedTime `json:"next_assessment_at,string"`
-	CanceledAt              *FormattedTime `json:"canceled_at,string"`
+	CurrentPeriodEndsAt     *FormattedTime `json:"current_period_ends_at"`
+	NextAssessmentAt        *FormattedTime `json:"next_assessment_at"`
+	CanceledAt              *FormattedTime `json:"canceled_at"`
 	CancellationMessage     string         `json:"cancellation_message"`
 	NextProductId           int            `json:"next_product_id,string"`
 	CancelAtEndOfPeriod     bool           `json:"cancel_at_end_of_period,string"`
 	PaymentCollectionMethod string         `json:"payment_collection_method"`
 	SnapDay                 string         `json:"snap_day"`
 	CancellationMethod      string         `json:"cancellation_method"`
-	CurrentPeriodStartAt    *FormattedTime `json:"current_period_started_at,string"`
+	CurrentPeriodStartAt    *FormattedTime `json:"current_period_started_at"`
 	PreviousState           string         `json:"previous_state"`
 	SignupPaymentId         int            `json:"signup_payment_id,string"`
 	SignupRevenue           float32        `json:"signup_revenue,string"`
-	DelayedCancelAt         *FormattedTime `json:"delayed_cancel_at,string"`
+	DelayedCancelAt         *FormattedTime `json:"delayed_cancel_at"`
 	CouponCode              string         `json:"coupon_code"`
 	TotalRevenueInCents     int            `json:"total_revenue_in_cents,string"`
 	ProductPriceInCents     int            `json:"product_price_in_cents,string"`
@@ -65,8 +65,8 @@ type Customer struct {
 	LastName                   string         `json:"last_name"`
 	Organization               string         `json:"organization"`
 	Email                      string         `json:"email"`
-	CreatedAt                  *FormattedTime `json:"created_at,string"`
-	UpdatedAt                  *FormattedTime `json:"updated_at,string"`
+	CreatedAt                  *FormattedTime `json:"created_at"`
+	UpdatedAt                  *FormattedTime `json:"updated_at"`
 	Reference                  string         `json:"reference"`
 	Address                    string         `json:"address"`
 	Address2                   string         `json:"address_2"`
@@ -75,10 +75,10 @@ type Customer struct {
 	Zip                        string         `json:"zip"`
 	Country                    string         `json:"country"`
 	Phone                      string         `json:"phone"`
-	PortalInviteLastSentAt     *FormattedTime `json:"portal_invite_last_sent_at,string"`
-	PortalInviteLastAcceptedAt *FormattedTime `json:"portal_invite_last_accepted_at,string"`
+	PortalInviteLastSentAt     *FormattedTime `json:"portal_invite_last_sent_at"`
+	PortalInviteLastAcceptedAt *FormattedTime `json:"portal_invite_last_accepted_at"`
 	Verified                   bool           `json:"verified,string"`
-	PortalCustomerCreatedAt    *FormattedTime `json:"portal_customer_created_at,string"`
+	PortalCustomerCreatedAt    *FormattedTime `json:"portal_customer_created_at"`
 	CcEmails                   string         `json:"cc_emails"`
 	TaxExempt                  bool           `json:"tax_exempt,string"`
 }
@@ -92,8 +92,8 @@ type Product struct {
 	RequestCreditCard       bool                `json:"request_credit_card,string"`
 	ExpirationInterval      int                 `json:"expiration_interval,string"`
 	ExpirationIntervalUnit  string              `json:"expiration_interval_unit"`
-	CreatedAt               *FormattedTime      `json:"created_at,string"`
-	UpdatedAt               *FormattedTime      `json:"updated_at,string"`
+	CreatedAt               *FormattedTime      `json:"created_at"`
+	UpdatedAt               *FormattedTime      `json:"updated_at"`
 	PriceInCents            int                 `json:"price_in_cents,string"`
 	Interval                int                 `json:"interval,string"`
 	IntervalUnit            string              `json:"interval_unit"`
@@ -101,7 +101,7 @@ type Product struct {
 	TrialPriceInCents       int                 `json:"trial_price_in_cents,string"`
 	TrialInterval           int                 `json:"trial_interval,string"`
 	TrialIntervalUnit       string              `json:"trial_interval_unit"`
-	ArchivedAt              *FormattedTime      `json:"archived_at,string"`
+	ArchivedAt              *FormattedTime      `json:"archived_at"`
 	RequireCreditCard       bool                `json:"require_credit_card,string"`
 	ReturnParams            string              `json:"return_params"`
 	Taxable                 bool                `json:"taxable,string"`
