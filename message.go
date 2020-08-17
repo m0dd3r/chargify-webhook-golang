@@ -5,6 +5,7 @@ import "encoding/json"
 const (
 	TEST                      EventName = "test"
 	SUBSCRIPTION_STATE_CHANGE EventName = "subscription_state_change"
+	SIGNUP_SUCCESS            EventName = "signup_success"
 )
 
 type Test struct {
@@ -21,6 +22,10 @@ type SubscriptionStateChange struct {
 	Payload
 }
 
+type SignupSuccess struct {
+	Payload
+}
+
 func NewTest(payload PayloadMap) (Message, error) {
 	t := Test{}
 	err := newMessage(&t, payload)
@@ -32,6 +37,15 @@ func NewTest(payload PayloadMap) (Message, error) {
 
 func NewSubscriptionStateChange(payload PayloadMap) (Message, error) {
 	ssc := SubscriptionStateChange{}
+	err := newMessage(&ssc, payload)
+	if err != nil {
+		return ssc, err
+	}
+	return ssc, nil
+}
+
+func NewSignupSuccess(payload PayloadMap) (Message, error) {
+	ssc := SignupSuccess{}
 	err := newMessage(&ssc, payload)
 	if err != nil {
 		return ssc, err

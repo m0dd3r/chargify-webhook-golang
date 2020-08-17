@@ -69,6 +69,49 @@ var inputs []testInput = []testInput{
 			return nil
 		},
 	},
+	testInput{
+		map[string]interface{}{
+			"site": map[string]interface{}{
+				"id":        "5",
+				"subdomain": "chargify",
+			},
+			"subscription": map[string]interface{}{
+				"id":               "55",
+				"previous_state":   "active",
+				"state":            "active",
+				"trial_started_at": now,
+				"customer": map[string]interface{}{
+					"first_name": "bob",
+					"last_name":  "dobbler",
+				},
+			},
+		},
+		cw.SIGNUP_SUCCESS,
+		func(i interface{}) error {
+			ssc := i.(cw.SignupSuccess)
+			if ssc.Site.Id != 5 || ssc.Site.Subdomain != "chargify" {
+				return errors.New(fmt.Sprintf("Failed to properly populate SSC.Site: %v", ssc))
+			}
+
+			if ssc.Subscription.State != "active" || ssc.Subscription.PreviousState != "active" {
+				return errors.New(fmt.Sprintf("Failed to properly populate SSC.State: %v", ssc))
+			}
+
+			if ssc.Subscription.Id != 55 ||
+				ssc.Subscription.State != "active" {
+				return errors.New(fmt.Sprintf("Failed to properly populate SSC.Subscription: %v", ssc.Subscription))
+			}
+			if ssc.Subscription.TrialStartedAt.Format(timeFormat) != now {
+				return errors.New(fmt.Sprintf("Failed to properly parse times: %v, %v", ssc.Subscription.TrialStartedAt.Format(timeFormat), now))
+			}
+
+			if ssc.Subscription.Customer.FirstName != "bob" ||
+				ssc.Subscription.Customer.LastName != "dobbler" {
+				return errors.New(fmt.Sprintf("Failed to properly populate SSC.Subscription.Customer: %v", ssc.Subscription.Customer))
+			}
+			return nil
+		},
+	},
 }
 
 func TestCreateMessage(t *testing.T) {
