@@ -85,3 +85,34 @@ func TestParseChargifyWebhook(t *testing.T) {
 		}
 	}
 }
+
+func TestParseChargifySignupSuccessWebhook(t *testing.T) {
+	body := "id=188397125&event=signup_success"
+	var (
+		w   cw.ChargifyWebhook
+		err error
+	)
+	w, err = cw.ParseChargifyWebhook(body)
+	if err != nil {
+		t.Error("Form could not be decoded: ", err)
+	}
+	if w.Id != 188397125 {
+		t.Error("Failed to unmarshal id, got: ", w.Id)
+	}
+	if w.Event != "signup_success" {
+		t.Error("Failed to unmarshal event, got: ", w.Event)
+	}
+
+	for _, input := range payloadInputs {
+		input := input
+		payloadTestBody := body + "&" + input.InputValue
+		w, err := cw.ParseChargifyWebhook(payloadTestBody)
+		if err != nil {
+			t.Error("Input could not be decoded: ", input.InputValue, err)
+		}
+		err = input.Verifier(w)
+		if err != nil {
+			t.Error(err)
+		}
+	}
+}

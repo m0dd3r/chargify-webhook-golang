@@ -18,6 +18,7 @@ func init() {
 	messageFactories = make(map[EventName]MessageFactory)
 	RegisterMessageFactory(TEST, NewTest)
 	RegisterMessageFactory(SUBSCRIPTION_STATE_CHANGE, NewSubscriptionStateChange)
+	RegisterMessageFactory(SIGNUP_SUCCESS, NewSignupSuccess)
 }
 
 func RegisterMessageFactory(t EventName, factory MessageFactory) {
